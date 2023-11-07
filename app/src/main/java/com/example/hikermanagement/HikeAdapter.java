@@ -1,14 +1,23 @@
 package com.example.hikermanagement;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.database.Cursor;
+import android.text.Layout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -18,6 +27,8 @@ import java.util.ArrayList;
 public class HikeAdapter extends RecyclerView.Adapter<HikeAdapter.myViewHolder>{
     private Context context;
     private ArrayList id, name, location, length, date, description, difficulty, isParking;
+
+    Animation translate_animation;
     HikeAdapter(Context context, ArrayList id, ArrayList name, ArrayList location, ArrayList date, ArrayList isParking, ArrayList length, ArrayList difficulty, ArrayList description){
         this.context = context;
         this.id = id;
@@ -57,6 +68,7 @@ public class HikeAdapter extends RecyclerView.Adapter<HikeAdapter.myViewHolder>{
     public class myViewHolder extends  RecyclerView.ViewHolder implements View.OnClickListener, PopupMenu.OnMenuItemClickListener {
         TextView idTV, nameTV, locationTV, lengthTV, dateTV, descriptionTV, difficultyTV, isParkingTV;
         ImageButton imageButton;
+        LinearLayout mainLayout;
         public myViewHolder(@NonNull View itemView) {
             super(itemView);
             idTV = itemView.findViewById(R.id.hikeId);
@@ -70,6 +82,11 @@ public class HikeAdapter extends RecyclerView.Adapter<HikeAdapter.myViewHolder>{
 
             imageButton = itemView.findViewById(R.id.imageButton);
             imageButton.setOnClickListener(this);
+
+            mainLayout = itemView.findViewById(R.id.mainLayout);
+            translate_animation = AnimationUtils.loadAnimation(context, R.anim.translate_animation);
+            mainLayout.setAnimation(translate_animation);
+
         }
 
         @Override
@@ -86,19 +103,47 @@ public class HikeAdapter extends RecyclerView.Adapter<HikeAdapter.myViewHolder>{
 
         @Override
         public boolean onMenuItemClick(MenuItem menuItem) {
-            switch (menuItem.getItemId()) {
-                case R.id.action_popup_edit:
-                    return true;
+            int itemId = menuItem.getItemId();
 
-                case R.id.action_popup_delete:
-
-                    return true;
-
-                default:
-                    return false;
+            if (itemId == R.id.action_popup_edit) {
+                Intent intent = new Intent(context, UpdateActivity.class);
+                intent.putExtra("id", String.valueOf(id.get(getBindingAdapterPosition())));
+                intent.putExtra("name", String.valueOf(name.get(getBindingAdapterPosition())));
+                intent.putExtra("location", String.valueOf(location.get(getBindingAdapterPosition())));
+                intent.putExtra("date", String.valueOf(date.get(getBindingAdapterPosition())));
+                intent.putExtra("parkingAvailable", String.valueOf(isParking.get(getBindingAdapterPosition())));
+                intent.putExtra("length", String.valueOf(length.get(getBindingAdapterPosition())));
+                intent.putExtra("difficulty", String.valueOf(difficulty.get(getBindingAdapterPosition())));
+                intent.putExtra("description", String.valueOf(description.get(getBindingAdapterPosition())));
+                context.startActivity(intent);
+                return true;
+            } else {
+                confirmDialog(String.valueOf(name.get(getBindingAdapterPosition())));
+                return true;
             }
+        }
 
-            return false;
+        void confirmDialog(String name) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(context);
+            builder.setTitle("Delete " + name);
+            builder.setMessage("Are you sure you want to delete " + name + " ?");
+            builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    DatabaseHelper db = new DatabaseHelper(context);
+                    int positionToDelete = getBindingAdapterPosition();
+                    db.deleteOne(String.valueOf(id.get(getBindingAdapterPosition())));
+                    db.deleteOne(String.valueOf(id.get(positionToDelete)));
+                    notifyItemRemoved(positionToDelete);
+                }
+            });
+            builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+
+                }
+            });
+            builder.create().show();
         }
     }
 }

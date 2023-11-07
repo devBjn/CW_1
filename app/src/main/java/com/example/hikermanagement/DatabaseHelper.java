@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.view.Menu;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -99,5 +100,41 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             cursor = db.rawQuery(query, null);
         }
         return cursor;
+    }
+
+    void updateHike(String id, String name, String location, String date, String length,
+                 String difficulty, String description, String parking) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues cv = new ContentValues();
+
+        cv.put(NAME, name);
+        cv.put(LOCATION, location);
+        cv.put(DAY_OF_HIKE, date);
+        cv.put(LENGTH, length);
+        cv.put(DIFFICULTY, difficulty);
+        cv.put(DESCRIPTION, description);
+        cv.put(PARKING, parking);
+
+        long result = db.update(TABLE_HIKES, cv, "_id=?", new String[]{id});
+        if(result == -1){
+            Toast.makeText(context, "Updated Failed !", Toast.LENGTH_SHORT).show();
+        }else {
+            Toast.makeText(context, "Updated Successfully !", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    void deleteOne(String id) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        long result = db.delete(TABLE_HIKES, "_id=?", new String[]{id});
+        if(result == -1){
+            Toast.makeText(context, "Deleted Failed !", Toast.LENGTH_SHORT).show();
+        }else {
+            Toast.makeText(context, "Deleted Successfully !", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    void deleteAll(){
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL("DELETE FROM " + TABLE_HIKES);
     }
 }

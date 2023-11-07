@@ -36,52 +36,7 @@ public class AddActivity extends AppCompatActivity {
         datePicker = findViewById(R.id.datePicker);
         buttonAdd = findViewById(R.id.buttonAdd);
 
-        Intent intent = getIntent();
-
-        String name = intent.getStringExtra("name");
-        String location = intent.getStringExtra("location");
-        String length = intent.getStringExtra("length");
-        String date = intent.getStringExtra("date");
-        String difficulty = intent.getStringExtra("difficulty");
-        boolean parkingAvailable = intent.getBooleanExtra("parkingAvailable", false);
-        String description = intent.getStringExtra("description");
-
-        name_hike_input.setText(name);
-        location_input.setText(location);
-        length_input.setText(length);
-        description_input.setText(description);
-
-        //set value for datePicker
-        Log.d(date, "parking");
-        if(date == null) {
-            // get the current date
-            final Calendar c = Calendar.getInstance();
-            int year = c.get(Calendar.YEAR);
-            int month = c.get(Calendar.MONTH);
-            int day = c.get(Calendar.DAY_OF_MONTH);
-
-            datePicker.init(year, month, day,null);
-        }
-        else {
-            String[] dateParts = date.split("-");
-            int day = Integer.parseInt(dateParts[0]);
-            int month = Integer.parseInt(dateParts[1]) - 1;
-            int year = Integer.parseInt(dateParts[2]);
-            datePicker.init(year, month, day, null);
-        }
-
-        //set value for spinner
-        String[] difficultyLevels = getResources().getStringArray(R.array.LevelDifficult);
-        int selectedPosition = Arrays.asList(difficultyLevels).indexOf(difficulty);
-
-        spinner.setSelection(selectedPosition);
-
-        //set value for group_parking
-        if (parkingAvailable) {
-            group_parking.check(R.id.radioButtonYes);
-        } else {
-            group_parking.check(R.id.radioButtonNo);
-        }
+        getSetDataIntent();
 
         buttonAdd.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -114,5 +69,52 @@ public class AddActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+    void getSetDataIntent() {
+        Intent intent = getIntent();
+
+        String name = intent.getStringExtra("name");
+        String location = intent.getStringExtra("location");
+        String length = intent.getStringExtra("length");
+        String date = intent.getStringExtra("date");
+        String difficulty = intent.getStringExtra("difficulty");
+        boolean parkingAvailable = intent.getBooleanExtra("parkingAvailable", false);
+        String description = intent.getStringExtra("description");
+
+        name_hike_input.setText(name);
+        location_input.setText(location);
+        length_input.setText(length);
+        description_input.setText(description);
+
+        //set value for datePicker
+        if(date == null) {
+            // get the current date
+            final Calendar c = Calendar.getInstance();
+            int year = c.get(Calendar.YEAR);
+            int month = c.get(Calendar.MONTH);
+            int day = c.get(Calendar.DAY_OF_MONTH);
+
+            datePicker.init(year, month, day,null);
+        }
+        else {
+            String[] dateParts = date.split("-");
+            int day = Integer.parseInt(dateParts[0]);
+            int month = Integer.parseInt(dateParts[1]) - 1;
+            int year = Integer.parseInt(dateParts[2]);
+            datePicker.init(year, month, day, null);
+        }
+
+        //set value for spinner
+        String[] difficultyLevels = getResources().getStringArray(R.array.LevelDifficult);
+        int selectedPosition = Arrays.asList(difficultyLevels).indexOf(difficulty);
+
+        spinner.setSelection(selectedPosition);
+
+        //set value for group_parking
+        if (parkingAvailable) {
+            group_parking.check(R.id.radioButtonYes);
+        } else {
+            group_parking.check(R.id.radioButtonNo);
+        }
     }
 }
