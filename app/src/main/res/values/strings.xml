@@ -1,0 +1,21 @@
+<resources>
+    <string name="app_name">HikerManagement</string>
+    <string name="name">Name of hike</string>
+    <string name="location">Location</string>
+    <string name="date">Date of hike</string>
+    <string name="parking">Parking available</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="length">Length of hike</string>
+    <string name="difficulty">Level of difficulty</string>
+    <string-array name="LevelDifficult">
+        <item>Easy</item>
+        <item>Medium</item>
+        <item>Hard</item>
+    </string-array>
+    <string name="description">Description</string>
+    <string name="button">Save</string>
+    <string name="observation_text">Observation Text</string>
+    <string name="observation_time">Observation Time</string>
+    <string name="additional_comments">Additional Comments</string>
+</resources>
