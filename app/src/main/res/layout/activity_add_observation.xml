@@ -58,8 +58,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:backgroundTint="#61D6BCBC"
+                android:outlineProvider="none"
                 android:text="Choose Time"
-                android:textColor="#040404" />
+                android:textColor="#040404"
+                app:cornerRadius="10dp" />
         </LinearLayout>
 
         <TextView
