@@ -16,7 +16,6 @@
         app:layout_constraintVertical_bias="0.0"
         tools:layout_editor_absoluteX="-12dp">
 
-        <!-- User Information -->
         <TextView
             android:id="@+id/textViewNameUpdate"
             android:layout_width="wrap_content"
@@ -64,7 +63,6 @@
             android:calendarViewShown="false"
             android:datePickerMode="spinner" />
 
-        <!-- Hike Details -->
         <TextView
             android:id="@+id/textViewParkingUpdate"
             android:layout_width="wrap_content"

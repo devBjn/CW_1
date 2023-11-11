@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 import android.view.Menu;
 import android.widget.Toast;
 
@@ -69,6 +70,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
+    //hike
     void addHike(String name, String location, String date, String length,
                  String difficulty, String description, String parking) {
         SQLiteDatabase db = this.getWritableDatabase();
@@ -136,5 +138,60 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     void deleteAll(){
         SQLiteDatabase db = this.getWritableDatabase();
         db.execSQL("DELETE FROM " + TABLE_HIKES);
+    }
+
+    //observation
+    void addObservation(int hike_id, String observation_text, String observation_time, String observation_comment) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues cv = new ContentValues();
+
+        cv.put(HIKE_ID, hike_id);
+        cv.put(OBSERVATION_TEXT, observation_text);
+        cv.put(OBSERVATION_TIME, observation_time);
+        cv.put(ADDITIONAL_COMMENTS, observation_comment);
+
+        long result = db.insert(TABLE_OBSERVATIONS, null, cv);
+
+        if(result == -1){
+            Toast.makeText(context, "Added Failed !", Toast.LENGTH_SHORT).show();
+        }else {
+            Toast.makeText(context, "Added Successfully !", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    Cursor readAllObservation(int hikeId) {
+        String query = "SELECT * FROM " + TABLE_OBSERVATIONS + " WHERE " + HIKE_ID + " = " + hikeId;
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = null;
+        if(db != null) {
+            cursor = db.rawQuery(query, null);
+        }
+        return cursor;
+    }
+
+    void updateObservation(String id,int hike_id, String observation_text, String observation_time, String observation_comment) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put(HIKE_ID, hike_id);
+        cv.put(OBSERVATION_TEXT, observation_text);
+        cv.put(OBSERVATION_TIME, observation_time);
+        cv.put(ADDITIONAL_COMMENTS, observation_comment);
+
+        long result = db.update(TABLE_OBSERVATIONS, cv, "observation_id=?", new String[]{id});
+        if(result == -1){
+            Toast.makeText(context, "Updated Failed !", Toast.LENGTH_SHORT).show();
+        }else {
+            Toast.makeText(context, "Updated Successfully !", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    void deleteOneObservation(String id) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        long result = db.delete(TABLE_OBSERVATIONS, "observation_id=?", new String[]{id});
+        if(result == -1){
+            Toast.makeText(context, "Deleted Failed !", Toast.LENGTH_SHORT).show();
+        }else {
+            Toast.makeText(context, "Deleted Successfully !", Toast.LENGTH_SHORT).show();
+        }
     }
 }

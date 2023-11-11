@@ -12,7 +12,7 @@
         android:layout_height="match_parent"
         android:paddingTop="?attr/actionBarSize"
         tools:layout_editor_absoluteX="0dp"
-        tools:layout_editor_absoluteY="-16dp" />
+        />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/add_button"
@@ -45,12 +45,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:text="No Hike."
+        android:text="No Hike"
         android:alpha="0.4"
         android:textSize="22dp"
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/emptyImage" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

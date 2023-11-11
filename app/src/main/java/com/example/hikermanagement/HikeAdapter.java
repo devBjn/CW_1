@@ -13,6 +13,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
@@ -24,10 +26,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 
-public class HikeAdapter extends RecyclerView.Adapter<HikeAdapter.myViewHolder>{
+public class HikeAdapter extends RecyclerView.Adapter<HikeAdapter.myViewHolder> implements Filterable {
     private Context context;
     private ArrayList id, name, location, length, date, description, difficulty, isParking;
-
+    private ArrayList filteredIds,filteredNames, filteredLocations, filteredDates, filteredIsParking, filteredLengths,filteredDifficulties, filteredDescriptions ;
+    private ArrayList originalIds,originalNames, originalLocations, originalDates, originalIsParking, originalLengths,originalDifficulties, originalDescriptions ;
     Animation translate_animation;
     HikeAdapter(Context context, ArrayList id, ArrayList name, ArrayList location, ArrayList date, ArrayList isParking, ArrayList length, ArrayList difficulty, ArrayList description){
         this.context = context;
@@ -39,6 +42,14 @@ public class HikeAdapter extends RecyclerView.Adapter<HikeAdapter.myViewHolder>{
         this.difficulty = difficulty;
         this.description = description;
         this.isParking = isParking;
+        this.originalIds=id;
+        this.originalNames = name;
+        this.originalLocations = location;
+        this.originalLengths = length;
+        this.originalDates = date;
+        this.originalDifficulties = difficulty;
+        this.originalDescriptions = description;
+        this.originalIsParking = isParking;
     }
     @NonNull
     @Override
@@ -58,11 +69,30 @@ public class HikeAdapter extends RecyclerView.Adapter<HikeAdapter.myViewHolder>{
 //        holder.lengthTV.setText(String.valueOf(length.get(position)));
 //        holder.descriptionTV.setText(String.valueOf(description.get(position)));
 //        holder.isParkingTV.setText(String.valueOf(isParking.get(position)));
+        holder.mainLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(context, DetailActivity.class);
+                intent.putExtra("hikeId", String.valueOf(id.get(holder.getBindingAdapterPosition())));
+                intent.putExtra("name", String.valueOf(name.get(holder.getBindingAdapterPosition())));
+                intent.putExtra("location", String.valueOf(location.get(holder.getBindingAdapterPosition())));
+                intent.putExtra("date", String.valueOf(date.get(holder.getBindingAdapterPosition())));
+                intent.putExtra("parkingAvailable", String.valueOf(isParking.get(holder.getBindingAdapterPosition())));
+                intent.putExtra("length", String.valueOf(length.get(holder.getBindingAdapterPosition())));
+                intent.putExtra("difficulty", String.valueOf(difficulty.get(holder.getBindingAdapterPosition())));
+                intent.putExtra("description", String.valueOf(description.get(holder.getBindingAdapterPosition())));
+                context.startActivity(intent);
+            }
+        });
     }
 
     @Override
     public int getItemCount() {
-        return id.size();
+        if(id.size() > 0) {
+            return id.size();
+        } else {
+            return 0;
+        }
     }
 
     public class myViewHolder extends  RecyclerView.ViewHolder implements View.OnClickListener, PopupMenu.OnMenuItemClickListener {
@@ -80,7 +110,7 @@ public class HikeAdapter extends RecyclerView.Adapter<HikeAdapter.myViewHolder>{
 //            descriptionTV = itemView.findViewById(R.id.description_txt);
 //            isParkingTV = itemView.findViewById(R.id.isParking_txt);
 
-            imageButton = itemView.findViewById(R.id.imageButton);
+            imageButton = itemView.findViewById(R.id.imageButtonHike);
             imageButton.setOnClickListener(this);
 
             mainLayout = itemView.findViewById(R.id.mainLayout);
@@ -123,17 +153,26 @@ public class HikeAdapter extends RecyclerView.Adapter<HikeAdapter.myViewHolder>{
             }
         }
 
-        void confirmDialog(String name) {
+        void confirmDialog(String nameHike) {
             AlertDialog.Builder builder = new AlertDialog.Builder(context);
-            builder.setTitle("Delete " + name);
-            builder.setMessage("Are you sure you want to delete " + name + " ?");
+            builder.setTitle("Delete " + nameHike);
+            builder.setMessage("Are you sure you want to delete " + nameHike + " ?");
             builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialogInterface, int i) {
                     DatabaseHelper db = new DatabaseHelper(context);
                     int positionToDelete = getBindingAdapterPosition();
-                    db.deleteOne(String.valueOf(id.get(getBindingAdapterPosition())));
                     db.deleteOne(String.valueOf(id.get(positionToDelete)));
+
+                    id.remove(positionToDelete);
+                    name.remove(positionToDelete);
+                    location.remove(positionToDelete);
+                    date.remove(positionToDelete);
+                    isParking.remove(positionToDelete);
+                    length.remove(positionToDelete);
+                    difficulty.remove(positionToDelete);
+                    description.remove(positionToDelete);
+
                     notifyItemRemoved(positionToDelete);
                 }
             });
@@ -146,4 +185,82 @@ public class HikeAdapter extends RecyclerView.Adapter<HikeAdapter.myViewHolder>{
             builder.create().show();
         }
     }
+    @Override
+    public Filter getFilter() {
+        return new Filter() {
+            @Override
+            protected FilterResults performFiltering(CharSequence charSequence) {
+                String searchText = charSequence.toString().toLowerCase().trim();
+
+                if (searchText.isEmpty()) {
+                    filteredIds = new ArrayList(originalIds);
+                    filteredNames = new ArrayList(originalNames);
+                    filteredLocations = new ArrayList(originalLocations);
+                    filteredDates = new ArrayList(originalDates);
+                    filteredIsParking = new ArrayList(originalIsParking);
+                    filteredLengths = new ArrayList(originalLengths);
+                    filteredDifficulties = new ArrayList(originalDifficulties);
+                    filteredDescriptions = new ArrayList(originalDescriptions);
+                } else {
+                    initializeFilteredLists();
+                    for (int i = 0; i < id.size(); i++) {
+                        if (name.get(i).toString().toLowerCase().contains(searchText)) {
+                            filteredIds.add(id.get(i));
+                            filteredNames.add(name.get(i));
+                            filteredLocations.add(location.get(i));
+                            filteredDates.add(date.get(i));
+                            filteredIsParking.add(isParking.get(i));
+                            filteredLengths.add(length.get(i));
+                            filteredDifficulties.add(difficulty.get(i));
+                            filteredDescriptions.add(description.get(i));
+                        }
+                    }
+                }
+
+                FilterResults filterResults = new FilterResults();
+                filterResults.values = filteredIds;
+                filterResults.count = filteredIds.size();
+                Log.d(String.valueOf(filterResults.count), "size");
+                return filterResults;
+            }
+
+            @Override
+            protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
+                if (filterResults.count > 0) {
+                    id =(ArrayList) filterResults.values;
+                    name = filteredNames;
+                    location = filteredLocations;
+                    date = filteredDates;
+                    isParking = filteredIsParking;
+                    length = filteredLengths;
+                    difficulty = filteredDifficulties;
+                    description = filteredDescriptions;
+                } else {
+                    Log.d(String.valueOf(id.size()), "size");
+                    id = new ArrayList();
+                    name = new ArrayList();
+                    location = new ArrayList();
+                    date = new ArrayList();
+                    isParking = new ArrayList();
+                    length = new ArrayList();
+                    difficulty = new ArrayList();
+                    description = new ArrayList();
+                }
+
+                notifyDataSetChanged();
+            }
+
+            private void initializeFilteredLists() {
+                filteredIds = new ArrayList();
+                filteredNames = new ArrayList();
+                filteredLocations = new ArrayList();
+                filteredDates = new ArrayList();
+                filteredIsParking = new ArrayList();
+                filteredLengths = new ArrayList();
+                filteredDifficulties = new ArrayList();
+                filteredDescriptions = new ArrayList();
+            }
+        };
+    }
 }
+

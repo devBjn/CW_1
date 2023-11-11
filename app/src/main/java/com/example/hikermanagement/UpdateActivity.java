@@ -80,7 +80,7 @@ public class UpdateActivity extends AppCompatActivity {
             date = intent.getStringExtra("date");
             difficulty = intent.getStringExtra("difficulty");
             isParking = intent.getBooleanExtra("parkingAvailable", false);
-            String description = intent.getStringExtra("description");
+            description = intent.getStringExtra("description");
 
             name_hike_input.setText(name);
             location_input.setText(location);

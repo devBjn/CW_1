@@ -106,7 +106,7 @@
                 app:srcCompat="@drawable/done_icon" />
 
             <ImageButton
-                android:id="@+id/imageButton"
+                android:id="@+id/imageButtonHike"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:backgroundTint="#FFFFFF"

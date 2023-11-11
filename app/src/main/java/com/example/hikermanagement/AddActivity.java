@@ -58,14 +58,14 @@ public class AddActivity extends AppCompatActivity {
                     } else {
                         Intent intent = new Intent(AddActivity.this, Prompt.class);
 
-                    intent.putExtra("name", name);
-                    intent.putExtra("location", location);
-                    intent.putExtra("date", date);
-                    intent.putExtra("parking", is_parking);
-                    intent.putExtra("length", length_hike);
-                    intent.putExtra("difficulty", level_difficulty);
-                    intent.putExtra("description", description);
-                    startActivity(intent);
+                        intent.putExtra("name", name);
+                        intent.putExtra("location", location);
+                        intent.putExtra("date", date);
+                        intent.putExtra("parking", is_parking);
+                        intent.putExtra("length", length_hike);
+                        intent.putExtra("difficulty", level_difficulty);
+                        intent.putExtra("description", description);
+                        startActivity(intent);
                 }
             }
         });
@@ -86,9 +86,7 @@ public class AddActivity extends AppCompatActivity {
         length_input.setText(length);
         description_input.setText(description);
 
-        //set value for datePicker
         if(date == null) {
-            // get the current date
             final Calendar c = Calendar.getInstance();
             int year = c.get(Calendar.YEAR);
             int month = c.get(Calendar.MONTH);
@@ -104,13 +102,11 @@ public class AddActivity extends AppCompatActivity {
             datePicker.init(year, month, day, null);
         }
 
-        //set value for spinner
         String[] difficultyLevels = getResources().getStringArray(R.array.LevelDifficult);
         int selectedPosition = Arrays.asList(difficultyLevels).indexOf(difficulty);
 
         spinner.setSelection(selectedPosition);
 
-        //set value for group_parking
         if (parkingAvailable) {
             group_parking.check(R.id.radioButtonYes);
         } else {
