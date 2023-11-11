@@ -51,13 +51,6 @@ public class DetailActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(DetailActivity.this, AddObservation.class);
                 intent.putExtra("hikeId", hikeId);
-//                intent.putExtra("name", name);
-//                intent.putExtra("location", location);
-//                intent.putExtra("date", date);
-//                intent.putExtra("parkingAvailable", parkingAvailable);
-//                intent.putExtra("length", length);
-//                intent.putExtra("difficulty", difficulty);
-//                intent.putExtra("description", description);
                 startActivity(intent);
             }
         });

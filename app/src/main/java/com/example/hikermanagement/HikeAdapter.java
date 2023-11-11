@@ -66,9 +66,6 @@ public class HikeAdapter extends RecyclerView.Adapter<HikeAdapter.myViewHolder> 
         holder.locationTV.setText(String.valueOf(location.get(position)));
         holder.dateTV.setText(String.valueOf(date.get(position)));
         holder.difficultyTV.setText(String.valueOf(difficulty.get(position)));
-//        holder.lengthTV.setText(String.valueOf(length.get(position)));
-//        holder.descriptionTV.setText(String.valueOf(description.get(position)));
-//        holder.isParkingTV.setText(String.valueOf(isParking.get(position)));
         holder.mainLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -106,9 +103,6 @@ public class HikeAdapter extends RecyclerView.Adapter<HikeAdapter.myViewHolder> 
             locationTV = itemView.findViewById(R.id.location_txt);
             difficultyTV = itemView.findViewById(R.id.difficulty_txt);
             dateTV = itemView.findViewById(R.id.date_txt);
-//            lengthTV = itemView.findViewById(R.id.length_txt);
-//            descriptionTV = itemView.findViewById(R.id.description_txt);
-//            isParkingTV = itemView.findViewById(R.id.isParking_txt);
 
             imageButton = itemView.findViewById(R.id.imageButtonHike);
             imageButton.setOnClickListener(this);
